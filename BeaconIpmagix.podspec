@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-A Bluetooth beacon library.
+iBeacon opens a world of possibilities for location awareness, and countless opportunities for interactivity between iOS devices and iBeacon hardware.
                        DESC
 
   s.homepage         = 'https://github.com/Mohamed-AbdulRaouf/BeaconIpmagix'
