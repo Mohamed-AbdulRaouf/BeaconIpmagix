@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import BeaconIpmagix
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        if let key = BeaconIpmagix.shared.getAppKey() {
+            debugPrint("🔑 Current appKey: \(key)")
+        }
     }
 
     override func didReceiveMemoryWarning() {
