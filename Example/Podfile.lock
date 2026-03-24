@@ -1,5 +1,5 @@
 PODS:
-  - BeaconIpmagix (0.1.0)
+  - BeaconIpmagix (1.2.0)
 
 DEPENDENCIES:
   - BeaconIpmagix (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BeaconIpmagix: f6409e01e3e7d2d2224c9f650a58c0cd456edca9
+  BeaconIpmagix: ca82dae09886f963bdd48129943d6d7a297557ea
 
-PODFILE CHECKSUM: 5876b9c71431519d0f12d28652e5df6e9866a166
+PODFILE CHECKSUM: b0e82ccc5868f16fd56c896fc2f3c393cf88d621
 
 COCOAPODS: 1.16.2
