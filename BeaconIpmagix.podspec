@@ -18,26 +18,29 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+A Bluetooth beacon library.
                        DESC
 
-  s.homepage         = 'https://github.com/mohamed.a.raouf@icloud.com/BeaconIpmagix'
+  s.homepage         = 'https://github.com/Mohamed-AbdulRaouf/BeaconIpmagix'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'mohamed.a.raouf@icloud.com' => 'mabdulraouf@ipmagix.com' }
-  s.source           = { :git => 'https://github.com/mohamed.a.raouf@icloud.com/BeaconIpmagix.git', :tag => s.version.to_s }
+  s.author           = { 'Raouf' => 'mohamed.a.raouf@icloud.com' }
+  s.source           = { :git => 'https://github.com/Mohamed-AbdulRaouf/BeaconIpmagix.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '12.4'
-  s.swift_versions   = ['5.0']
-  s.source_files = 'BeaconIpmagix/Classes/**/*.{h,m,swift}'
+  s.swift_versions = '5.3.2'
+  s.source_files = 'BeaconIpmagix/Classes/**/*'
+  s.static_framework = true
+  s.requires_arc = true
+  s.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER': 'com.Ipmagix.BeaconIpmagix' }
 
   # s.resource_bundles = {
   #   'BeaconIpmagix' => ['BeaconIpmagix/Assets/*.png']
   # }
 
-  s.public_header_files = 'Pod/Classes/**/*.h'
-  s.requires_arc = true
+#  s.public_header_files = 'Pod/Classes/**/*.h'
+#  s.requires_arc = true
   s.frameworks = 'CoreLocation', 'CoreBluetooth'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

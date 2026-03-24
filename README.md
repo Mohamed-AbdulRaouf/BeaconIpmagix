@@ -20,6 +20,23 @@ it, simply add the following line to your Podfile:
 pod 'BeaconIpmagix'
 ```
 
+## Usage
+
+```swift
+MySDK.shared.configure(appKey: "YOUR_KEY")
+
+---
+
+### ✅ Improve API design
+
+Instead of:
+
+```swift
+MySDK.shared.configure(appKey:)
+
+
+
+
 ## Author
 
 mohamed.a.raouf@icloud.com, mabdulraouf@ipmagix.com

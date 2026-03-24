@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.Ipmagix.BeaconIpmagix</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -20,5 +20,11 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>App needs location permissions to scan nearby beacons.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App needs location permissions to scan nearby beacons.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App needs location permissions to scan nearby beacons.</string>
 </dict>
 </plist>
