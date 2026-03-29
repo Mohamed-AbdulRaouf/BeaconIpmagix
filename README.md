@@ -27,15 +27,6 @@ MySDK.shared.configure(appKey: "YOUR_KEY")
 
 ---
 
-### ✅ Improve API design
-
-Instead of:
-
-```swift
-MySDK.shared.configure(appKey:)
-
-
-
 
 ## Author
 

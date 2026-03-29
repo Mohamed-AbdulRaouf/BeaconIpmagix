@@ -14,6 +14,11 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		732D0A452F79499B00FBB954 /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A442F79499B00FBB954 /* LoginRequest.swift */; };
+		732D0A482F7949D000FBB954 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A472F7949D000FBB954 /* UITextField+.swift */; };
+		732D0A4A2F794A4400FBB954 /* UIButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A492F794A4400FBB954 /* UIButton+.swift */; };
+		732D0A4E2F794A7800FBB954 /* UILabel+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A4D2F794A7700FBB954 /* UILabel+.swift */; };
+		73B8AD992F78695B00612B83 /* HomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B8AD982F78695B00612B83 /* HomePageViewController.swift */; };
 		9662D582151CB8944E114D8A /* Pods_BeaconIpmagix_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEEE448ECB0B63560439E74F /* Pods_BeaconIpmagix_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +48,12 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6A19ED5B6FD4DF3BF592880C /* Pods_BeaconIpmagix_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeaconIpmagix_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		732D0A442F79499B00FBB954 /* LoginRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
+		732D0A472F7949D000FBB954 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
+		732D0A492F794A4400FBB954 /* UIButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+.swift"; sourceTree = "<group>"; };
+		732D0A4D2F794A7700FBB954 /* UILabel+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+.swift"; sourceTree = "<group>"; };
+		738D684E2F73316F00532E1D /* BeaconIpmagix_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeaconIpmagix_Example.entitlements; sourceTree = "<group>"; };
+		73B8AD982F78695B00612B83 /* HomePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageViewController.swift; sourceTree = "<group>"; };
 		7D3F9CE51CE22EED3328978E /* BeaconIpmagix.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeaconIpmagix.podspec; path = ../BeaconIpmagix.podspec; sourceTree = "<group>"; };
 		88E8EFE91E79BFC7D5875E04 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		AEEE448ECB0B63560439E74F /* Pods_BeaconIpmagix_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeaconIpmagix_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,6 +94,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				738D684E2F73316F00532E1D /* BeaconIpmagix_Example.entitlements */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for BeaconIpmagix */,
 				607FACE81AFB9204008FA782 /* Tests */,
@@ -104,8 +116,11 @@
 		607FACD21AFB9204008FA782 /* Example for BeaconIpmagix */ = {
 			isa = PBXGroup;
 			children = (
+				732D0A462F7949B700FBB954 /* Extensions */,
+				732D0A432F79498D00FBB954 /* Models */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				73B8AD982F78695B00612B83 /* HomePageViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -148,6 +163,24 @@
 				B6FD3D46CC51711AFE8989C9 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
+			sourceTree = "<group>";
+		};
+		732D0A432F79498D00FBB954 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				732D0A442F79499B00FBB954 /* LoginRequest.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		732D0A462F7949B700FBB954 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				732D0A472F7949D000FBB954 /* UITextField+.swift */,
+				732D0A492F794A4400FBB954 /* UIButton+.swift */,
+				732D0A4D2F794A7700FBB954 /* UILabel+.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		A43B62FE6DDCF4AE4712CD8C /* Frameworks */ = {
@@ -315,7 +348,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				732D0A4A2F794A4400FBB954 /* UIButton+.swift in Sources */,
+				732D0A482F7949D000FBB954 /* UITextField+.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				732D0A4E2F794A7800FBB954 /* UILabel+.swift in Sources */,
+				73B8AD992F78695B00612B83 /* HomePageViewController.swift in Sources */,
+				732D0A452F79499B00FBB954 /* LoginRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,7 +440,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -448,7 +486,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -461,11 +499,16 @@
 			baseConfigurationReference = 1926A690EFDE8F1DDB71AED1 /* Pods-BeaconIpmagix_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BeaconIpmagix_Example.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2C5GA3P469;
 				INFOPLIST_FILE = BeaconIpmagix/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeaconIpmagix;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.BeaconIpmagix-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
@@ -477,11 +520,16 @@
 			baseConfigurationReference = 40D629401275611224D6BC51 /* Pods-BeaconIpmagix_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BeaconIpmagix_Example.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2C5GA3P469;
 				INFOPLIST_FILE = BeaconIpmagix/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeaconIpmagix;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.BeaconIpmagix-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;

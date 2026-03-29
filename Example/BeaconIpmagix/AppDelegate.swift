@@ -7,18 +7,59 @@
 //
 
 import UIKit
+import CoreLocation
 import BeaconIpmagix
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    static var shared = AppDelegate()
     var window: UIWindow?
-
+    var locationManager = CLLocationManager()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        // ✅ Step 1: Set delegate FIRST before anything else
+        UNUserNotificationCenter.current().delegate = self
+        // ✅ Step 2: Request permission with all required options
+        requestNotificationPermission()
+
+        locationManager.requestAlwaysAuthorization()
         BeaconIpmagix.shared.configure(appKey: "123456-APP-KEY")
+        window = UIWindow(frame: UIScreen.main.bounds)
+        let rootViewController: UIViewController
+        if let token = UserDefaults.standard.string(forKey: "authToken"), !token.isEmpty {
+            rootViewController = HomePageViewController()
+        } else {
+            rootViewController = ViewController()
+        }
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
         return true
+    }
+    // ✅ Step 3: Show notifications while app is in FOREGROUND
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        if #available(iOS 14.0, *) {
+            completionHandler([.banner, .sound, .badge, .list])
+        } else {
+            completionHandler([.alert, .sound, .badge])
+        }
+    }
+
+    // MARK: - Permission Request
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: [.alert, .sound, .badge, .criticalAlert]
+        ) { granted, error in
+            if granted {
+                debugPrint("✅ Notification permission granted")
+            } else if let error = error {
+                debugPrint("❌ Permission error: \(error.localizedDescription)")
+            } else {
+                debugPrint("⚠️ Notification permission DENIED — user must enable in Settings")
+            }
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -42,7 +83,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
 
 }
 
