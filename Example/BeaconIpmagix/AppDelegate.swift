@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if let token = UserDefaults.standard.string(forKey: "authToken"), !token.isEmpty {
             rootViewController = HomePageViewController()
         } else {
-            rootViewController = ViewController()
+            rootViewController = LoginViewController()
         }
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()

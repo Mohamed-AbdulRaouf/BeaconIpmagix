@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  LoginViewController.swift
 //  BeaconIpmagix
 //
 //  Created by mohamed.a.raouf@icloud.com on 03/24/2026.
@@ -9,7 +9,7 @@
 import UIKit
 import BeaconIpmagix
 
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
     // MARK: - Properties
     private let imageView: UIImageView = {
         let imageView = UIImageView()

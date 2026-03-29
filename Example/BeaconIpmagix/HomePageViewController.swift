@@ -127,7 +127,7 @@ class HomePageViewController: UIViewController {
         UserDefaults.standard.removeObject(forKey: "authToken")
         UserDefaults.standard.removeObject(forKey: "displayName")
         UserDefaults.standard.removeObject(forKey: "beacons")
-        let vc = ViewController()
+        let vc = LoginViewController()
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
     }
