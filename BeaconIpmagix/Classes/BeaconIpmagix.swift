@@ -27,7 +27,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
     // MARK: - Public API
     public func configure(appKey: String) {
         self.k = appKey
-        debugPrint("✅ SDK initialized")
+        BeaconLogger.shared.log("✅ SDK initialized")
         setupLocationManager()
         requestNotificationPermission()
     }
@@ -49,6 +49,13 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.requestAlwaysAuthorization()
+        // Enable background updates ONLY if app supports it (prevents crash)
+//        if Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") != nil {
+//            locationManager?.allowsBackgroundLocationUpdates = true
+//        } else {
+//            BeaconLogger.shared.log("⚠️ Background modes not enabled (UIBackgroundModes missing)")
+//        }
+//        locationManager?.pausesLocationUpdatesAutomatically = false
     }
 
     public func setBeaconsListAndStartScanning(_ regions: [RegionBeaconModel]) {
@@ -67,7 +74,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
     // MARK: - Start Scanning (Public API)
     public func startScanning() {
         guard isConfigured() else {
-            debugPrint("❌ SDK not configured. Call configure(appKey:) first")
+            BeaconLogger.shared.log("❌ SDK not configured. Call configure(appKey:) first")
             return
         }
         startScanning(regions: self.externalRegions)
@@ -85,7 +92,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
                 locationManager.startMonitoring(for: beaconRegion)
                 locationManager.startRangingBeacons(satisfying: CLBeaconIdentityConstraint(uuid: uuid))
 
-                debugPrint("📡 Scanning UUID: \(region.uuid)")
+                BeaconLogger.shared.log("📡 Scanning UUID: \(region.uuid)")
             }
         }
     }
@@ -100,7 +107,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         }
 
         beaconRegions.removeAll()
-        debugPrint("🛑 Stopped all beacon scanning")
+        BeaconLogger.shared.log("🛑 Stopped all beacon scanning")
     }
 
     public func stopScanning(for uuidBeacon: String) {
@@ -112,19 +119,17 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         if let region = beaconRegions.first(where: { $0.uuid == uuid }) {
             locationManager.stopMonitoring(for: region)
             locationManager.stopRangingBeacons(satisfying: constraint)
-
             beaconRegions.removeAll { $0.uuid == uuid }
-
-            debugPrint("🛑 Stopped scanning for UUID: \(uuidBeacon)")
+            BeaconLogger.shared.log("🛑 Stopped scanning for UUID: \(uuidBeacon)")
         }
     }
 
     // MARK: - CLLocation Delegate
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways || status == .authorizedWhenInUse {
-            debugPrint("✅ Location authorized")
+            BeaconLogger.shared.log("✅ Location authorized")
         } else {
-            debugPrint("❌ Location denied")
+            BeaconLogger.shared.log("❌ Location denied")
         }
     }
 
@@ -133,7 +138,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         guard !beacons.isEmpty else { return }
 
         for beacon in beacons {
-            debugPrint("📍 Beacon detected: \(beacon.uuid.uuidString) RSSI: \(beacon.rssi)")
+            BeaconLogger.shared.log("📍 Beacon detected: \(beacon.uuid.uuidString) RSSI: \(beacon.rssi)")
 
             let uuidString = beacon.uuid.uuidString
 
@@ -141,34 +146,46 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
             let isAllowed = externalRegions.contains { $0.uuid.uppercased() == uuidString.uppercased() }
 
             guard isAllowed else {
-                debugPrint("⛔️ Ignored beacon (not in list): \(uuidString)")
+                BeaconLogger.shared.log("⛔️ Ignored beacon (not in list): \(uuidString)")
                 continue
             }
             self.notifyUserWithCooldown(uuid: uuidString)
-            NotificationCenter.default.post(
-                name: NSNotification.Name("BeaconIpmagix_Detected"),
-                object: nil,
-                userInfo: [
-                    "uuid": beacon.uuid.uuidString,
-                    "major": beacon.major,
-                    "minor": beacon.minor,
-                    "rssi": beacon.rssi
-                ]
-            )
         }
     }
+
+    // MARK: - Beacon Region Monitoring (Killed State Support)
+    public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        guard let beaconRegion = region as? CLBeaconRegion else {
+            BeaconLogger.shared.log("⚠️ Entered non-beacon region")
+            return
+        }
+
+        let uuidString = beaconRegion.uuid.uuidString
+        BeaconLogger.shared.log("🚪 Entered region UUID: \(uuidString)")
+
+        // Check if this UUID exists in allowed external regions
+        let isAllowed = externalRegions.contains { $0.uuid.uppercased() == uuidString.uppercased() }
+
+        guard isAllowed else {
+            BeaconLogger.shared.log("⛔️ Ignored region (not in list): \(uuidString)")
+            return
+        }
+
+        self.notifyUserWithCooldown(uuid: uuidString)
+    }
+
 
     // MARK: - Permission Request
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .sound, .badge, .criticalAlert]
+            options: [.alert, .sound, .badge]
         ) { granted, error in
             if granted {
-                debugPrint("✅ Notification permission granted")
+                BeaconLogger.shared.log("✅ Notification permission granted")
             } else if let error = error {
-                debugPrint("❌ Permission error: \(error.localizedDescription)")
+                BeaconLogger.shared.log("❌ Permission error: \(error.localizedDescription)")
             } else {
-                debugPrint("⚠️ Notification permission DENIED — user must enable in Settings")
+                BeaconLogger.shared.log("⚠️ Notification permission DENIED — user must enable in Settings")
             }
         }
     }
@@ -179,7 +196,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             guard settings.authorizationStatus == .authorized ||
                     settings.authorizationStatus == .provisional else {
-                debugPrint("⚠️ Notifications not authorized: \(settings.authorizationStatus.rawValue)")
+                BeaconLogger.shared.log("⚠️ Notifications not authorized: \(settings.authorizationStatus.rawValue)")
                 return
             }
 
@@ -195,7 +212,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
             }
 
             // ✅ Use 0.1 minimum safe delay (1s is fine too)
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
 
             let request = UNNotificationRequest(
                 identifier: UUID().uuidString,
@@ -206,12 +223,20 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
             UNUserNotificationCenter.current().add(request) { error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        debugPrint("❌ Notification error: \(error.localizedDescription)")
+                        BeaconLogger.shared.log("❌ Notification error: \(error.localizedDescription)")
                     } else {
-                        debugPrint("📢 Notification fired successfully")
+                        BeaconLogger.shared.log("📢 Notification fired successfully")
                     }
                 }
             }
+
+            NotificationCenter.default.post(
+                name: NSNotification.Name("BeaconIpmagix_Detected"),
+                object: nil,
+                userInfo: [
+                    "body": body,
+                ]
+            )
         }
     }
 
@@ -225,8 +250,10 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
 
     // MARK: - Backend Validation
     private func notifyUser(uuid: String) {
+        let requestStartTime = Date()
+
         guard let _ = k else {
-            debugPrint("please set api key first!")
+            BeaconLogger.shared.log("please set api key first!")
             return
         }
 
@@ -237,20 +264,48 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         request.setValue(BaseBeaconApi.apiKey, forHTTPHeaderField: "X-API-KEY")
         request.setValue("\(BaseBeaconApi.token)", forHTTPHeaderField: "Authorization")
 
+        // 🔍 Build cURL representation
+        var curlCommand = "curl -X \(request.httpMethod ?? "POST") \"\(url.absoluteString)\""
+
+        if let headers = request.allHTTPHeaderFields {
+            for (key, value) in headers {
+                curlCommand += " \\\n  -H \"\(key): \(value)\""
+            }
+        }
+
+        BeaconLogger.shared.log("📤 REQUEST (cURL):\n\(curlCommand)")
+        BeaconLogger.shared.log("🕒 Request Time: \(requestStartTime)")
 
         URLSession.shared.dataTask(with: request) { data, _, _ in
-            guard let data = data else { return }
+            let responseTime = Date()
+            let duration = responseTime.timeIntervalSince(requestStartTime)
+
+            guard let data = data else {
+                BeaconLogger.shared.log("❌ No data received")
+                BeaconLogger.shared.log("🕒 Response Time: \(responseTime)")
+                BeaconLogger.shared.log("⏱ Duration: \(duration)s")
+                return
+            }
 
             do {
                 let result = try JSONDecoder().decode(NotifyUserBeaconResponse.self, from: data)
-                debugPrint("🔐 Validation: \(result.data)")
+                BeaconLogger.shared.log("📥 RESPONSE:")
+                BeaconLogger.shared.log("🔐 Data: \(result.data)")
+                BeaconLogger.shared.log("✅ Success: \(result.success)")
+                BeaconLogger.shared.log("💬 Message: \(result.message)")
+                BeaconLogger.shared.log("🕒 Response Time: \(responseTime)")
+                BeaconLogger.shared.log("⏱ Duration: \(duration)s")
                 if result.success {
                     self.fireLocalNotification(body: result.data)
                 } else {
-                    debugPrint("❌ API failed: \(result.message)")
+                    BeaconLogger.shared.log("❌ API failed: \(result.message)")
+                    BeaconLogger.shared.log("🕒 Response Time: \(responseTime)")
+                    BeaconLogger.shared.log("⏱ Duration: \(duration)s")
                 }
             } catch {
-                debugPrint("❌ Decoding error:", error)
+                BeaconLogger.shared.log("❌ Decoding error: \(error.localizedDescription)")
+                BeaconLogger.shared.log("🕒 Response Time: \(responseTime)")
+                BeaconLogger.shared.log("⏱ Duration: \(duration)s")
             }
         }.resume()
     }
@@ -261,7 +316,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         if let lastNotified = notifiedUUIDs[uuid] {
             let elapsed = now.timeIntervalSince(lastNotified)
             guard elapsed >= cooldownInterval else {
-                print("Cooldown active for \(uuid). \(cooldownInterval - elapsed)s remaining.")
+                BeaconLogger.shared.log("Cooldown active for \(uuid). \(cooldownInterval - elapsed)s remaining.")
                 return
             }
             // Cooldown expired — remove the lock and allow the call
@@ -269,11 +324,11 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         } else {
             // First time seeing this UUID — lock it and skip
             notifiedUUIDs[uuid] = now
-            print("UUID \(uuid) caught for the first time. Blocked until cooldown expires.")
+            BeaconLogger.shared.log("UUID \(uuid) caught for the first time. Blocked until cooldown expires.")
             // After 5 seconds, remove the lock so next call goes through
             DispatchQueue.main.asyncAfter(deadline: .now() + cooldownInterval) { [weak self] in
                 self?.notifiedUUIDs.removeValue(forKey: uuid)
-                print("Cooldown expired for \(uuid). Ready to notify.")
+                BeaconLogger.shared.log("Cooldown expired for \(uuid). Ready to notify.")
             }
             return
         }

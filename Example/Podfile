@@ -4,6 +4,7 @@ platform :ios, '14.0'
 
 target 'BeaconIpmagix_Example' do
   pod 'BeaconIpmagix', :path => '../'
+  pod 'IQKeyboardManagerSwift'
 
   target 'BeaconIpmagix_Tests' do
     inherit! :search_paths

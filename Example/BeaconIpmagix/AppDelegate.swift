@@ -8,29 +8,45 @@
 
 import UIKit
 import CoreLocation
+import IQKeyboardManagerSwift
 import BeaconIpmagix
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, CLLocationManagerDelegate {
     static var shared = AppDelegate()
     var window: UIWindow?
     var locationManager = CLLocationManager()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        IQKeyboardManager.shared.isEnabled = true
+        IQKeyboardManager.shared.resignOnTouchOutside = true
+        IQKeyboardManager.shared.enableAutoToolbar = true
+        IQKeyboardManager.shared.toolbarConfiguration.manageBehavior = .byPosition
         // ✅ Step 1: Set delegate FIRST before anything else
         UNUserNotificationCenter.current().delegate = self
         // ✅ Step 2: Request permission with all required options
         requestNotificationPermission()
 
+        // ✅ Listen to BeaconIpmagix notification
+        //        NotificationCenter.default.addObserver(
+        //            self,
+        //            selector: #selector(handleBeaconNotification(_:)),
+        //            name: NSNotification.Name("BeaconIpmagix_Detected"),
+        //            object: nil
+        //        )
+
         locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = self
+        //        locationManager.allowsBackgroundLocationUpdates = true
+        //        locationManager.pausesLocationUpdatesAutomatically = false
         BeaconIpmagix.shared.configure(appKey: "123456-APP-KEY")
         window = UIWindow(frame: UIScreen.main.bounds)
         let rootViewController: UIViewController
         if let token = UserDefaults.standard.string(forKey: "authToken"), !token.isEmpty {
-            rootViewController = HomePageViewController()
+            rootViewController = HomeQNBViewController()
         } else {
-            rootViewController = LoginViewController()
+            rootViewController = LoginQNBViewController()
         }
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
@@ -43,14 +59,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if #available(iOS 14.0, *) {
             completionHandler([.banner, .sound, .badge, .list])
         } else {
-            completionHandler([.alert, .sound, .badge])
+            completionHandler([.banner, .alert, .sound, .badge])
         }
     }
+
+    // ✅ Step 4: Handle notification tap / receive in background
+    //    func userNotificationCenter(_ center: UNUserNotificationCenter,
+    //                                didReceive response: UNNotificationResponse,
+    //                                withCompletionHandler completionHandler: @escaping () -> Void) {
+    //
+    //        let userInfo = response.notification.request.content.userInfo
+    //
+    //        // Extract body safely
+    //        let body = response.notification.request.content.body
+    //        debugPrint("📩 Notification received with body: \(body)")
+    //
+    //        // 🔥 Fire local notification again if needed (example reuse)
+    //        fireLocalNotification(body: body)
+    //
+    //        completionHandler()
+    //    }
+
+    // ✅ Catch SDK notification and fire push with body
+    //    @objc private func handleBeaconNotification(_ notification: Notification) {
+    //        guard let userInfo = notification.userInfo,
+    //              let body = userInfo["body"] as? String else {
+    //            debugPrint("⚠️ No body found in BeaconIpmagix_Detected")
+    //            return
+    //        }
+    //
+    //        debugPrint("📩 Received from SDK: \(body)")
+    //
+    //        // 🔥 Fire local notification with same body
+    //        fireLocalNotification(body: body)
+    //    }
 
     // MARK: - Permission Request
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .sound, .badge, .criticalAlert]
+            options: [.alert, .sound, .badge]
         ) { granted, error in
             if granted {
                 debugPrint("✅ Notification permission granted")
@@ -61,6 +108,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
     }
+
+    // 🔥 Reusable local notification trigger from AppDelegate
+    //    private func fireLocalNotification(body: String) {
+    //        let content = UNMutableNotificationContent()
+    //        content.title = "Beacon Notification"
+    //        content.body = body
+    //        content.sound = .default()
+    //
+    //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+    //
+    //        let request = UNNotificationRequest(
+    //            identifier: UUID().uuidString,
+    //            content: content,
+    //            trigger: trigger
+    //        )
+    //
+    //        UNUserNotificationCenter.current().add(request) { error in
+    //            if let error = error {
+    //                debugPrint("❌ Notification error: \(error.localizedDescription)")
+    //            } else {
+    //                debugPrint("📢 Notification fired from AppDelegate")
+    //            }
+    //        }
+    //    }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -85,4 +156,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
 }
-

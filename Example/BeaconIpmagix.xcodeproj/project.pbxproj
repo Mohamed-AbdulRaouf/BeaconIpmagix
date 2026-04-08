@@ -18,6 +18,8 @@
 		732D0A482F7949D000FBB954 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A472F7949D000FBB954 /* UITextField+.swift */; };
 		732D0A4A2F794A4400FBB954 /* UIButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A492F794A4400FBB954 /* UIButton+.swift */; };
 		732D0A4E2F794A7800FBB954 /* UILabel+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A4D2F794A7700FBB954 /* UILabel+.swift */; };
+		732D0A5C2F795F9B00FBB954 /* HomeQNBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A5B2F795F9A00FBB954 /* HomeQNBViewController.swift */; };
+		732D0A5E2F795FA900FBB954 /* LoginQNBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D0A5D2F795FA900FBB954 /* LoginQNBViewController.swift */; };
 		73B8AD992F78695B00612B83 /* HomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B8AD982F78695B00612B83 /* HomePageViewController.swift */; };
 		9662D582151CB8944E114D8A /* Pods_BeaconIpmagix_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEEE448ECB0B63560439E74F /* Pods_BeaconIpmagix_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -52,6 +54,8 @@
 		732D0A472F7949D000FBB954 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		732D0A492F794A4400FBB954 /* UIButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+.swift"; sourceTree = "<group>"; };
 		732D0A4D2F794A7700FBB954 /* UILabel+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+.swift"; sourceTree = "<group>"; };
+		732D0A5B2F795F9A00FBB954 /* HomeQNBViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeQNBViewController.swift; sourceTree = "<group>"; };
+		732D0A5D2F795FA900FBB954 /* LoginQNBViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginQNBViewController.swift; sourceTree = "<group>"; };
 		738D684E2F73316F00532E1D /* BeaconIpmagix_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeaconIpmagix_Example.entitlements; sourceTree = "<group>"; };
 		73B8AD982F78695B00612B83 /* HomePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageViewController.swift; sourceTree = "<group>"; };
 		7D3F9CE51CE22EED3328978E /* BeaconIpmagix.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeaconIpmagix.podspec; path = ../BeaconIpmagix.podspec; sourceTree = "<group>"; };
@@ -120,6 +124,8 @@
 				732D0A432F79498D00FBB954 /* Models */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* LoginViewController.swift */,
+				732D0A5B2F795F9A00FBB954 /* HomeQNBViewController.swift */,
+				732D0A5D2F795FA900FBB954 /* LoginQNBViewController.swift */,
 				73B8AD982F78695B00612B83 /* HomePageViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -203,6 +209,7 @@
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
+				C409F20EDD009B95CA8CFE57 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -340,6 +347,38 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C409F20EDD009B95CA8CFE57 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeaconIpmagix_Example/Pods-BeaconIpmagix_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardCore/IQKeyboardCore.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardNotification/IQKeyboardNotification.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardReturnManager/IQKeyboardReturnManager.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardToolbar/IQKeyboardToolbar.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardToolbarManager/IQKeyboardToolbarManager.framework",
+				"${BUILT_PRODUCTS_DIR}/IQTextInputViewNotification/IQTextInputViewNotification.framework",
+				"${BUILT_PRODUCTS_DIR}/IQTextView/IQTextView.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardNotification.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardReturnManager.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardToolbar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardToolbarManager.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQTextInputViewNotification.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQTextView.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeaconIpmagix_Example/Pods-BeaconIpmagix_Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -350,7 +389,9 @@
 				607FACD81AFB9204008FA782 /* LoginViewController.swift in Sources */,
 				732D0A4A2F794A4400FBB954 /* UIButton+.swift in Sources */,
 				732D0A482F7949D000FBB954 /* UITextField+.swift in Sources */,
+				732D0A5C2F795F9B00FBB954 /* HomeQNBViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				732D0A5E2F795FA900FBB954 /* LoginQNBViewController.swift in Sources */,
 				732D0A4E2F794A7800FBB954 /* UILabel+.swift in Sources */,
 				73B8AD992F78695B00612B83 /* HomePageViewController.swift in Sources */,
 				732D0A452F79499B00FBB954 /* LoginRequest.swift in Sources */,
