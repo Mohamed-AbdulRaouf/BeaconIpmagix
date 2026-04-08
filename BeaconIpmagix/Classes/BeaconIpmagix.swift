@@ -18,6 +18,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
     private var beaconRegions: [CLBeaconRegion] = []
     private var externalRegions: [RegionBeaconModel] = []
     private var notifiedUUIDs: [String: Date] = [:]
+    private var triggeredUUIDs: Set<String> = []
     private let cooldownInterval: TimeInterval = 5.0
 
     private override init() {
@@ -49,13 +50,16 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.requestAlwaysAuthorization()
-        // Enable background updates ONLY if app supports it (prevents crash)
-//        if Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") != nil {
-//            locationManager?.allowsBackgroundLocationUpdates = true
-//        } else {
-//            BeaconLogger.shared.log("⚠️ Background modes not enabled (UIBackgroundModes missing)")
-//        }
-//        locationManager?.pausesLocationUpdatesAutomatically = false
+
+        // 🔥 Keep scanning active continuously
+        locationManager?.pausesLocationUpdatesAutomatically = false
+
+        if #available(iOS 9.0, *) {
+            locationManager?.allowsBackgroundLocationUpdates = true
+        }
+
+        // Start updating location to keep the app alive for beacon scanning
+        locationManager?.startUpdatingLocation()
     }
 
     public func setBeaconsListAndStartScanning(_ regions: [RegionBeaconModel]) {
@@ -96,6 +100,7 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
             }
         }
     }
+
 
     // MARK: - Stop Scanning (Public API)
     public func stopScanning() {
@@ -151,6 +156,9 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
             }
             self.notifyUserWithCooldown(uuid: uuidString)
         }
+        // 🔁 Force continuous ranging to avoid iOS throttling
+//        manager.stopRangingBeacons(satisfying: beaconConstraint)
+//        manager.startRangingBeacons(satisfying: beaconConstraint)
     }
 
     // MARK: - Beacon Region Monitoring (Killed State Support)
@@ -172,6 +180,21 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
         }
 
         self.notifyUserWithCooldown(uuid: uuidString)
+        // 🔥 Restart ranging when entering region (important for background/killed state)
+        if let beaconRegion = region as? CLBeaconRegion {
+            let constraint = CLBeaconIdentityConstraint(uuid: beaconRegion.uuid)
+            manager.startRangingBeacons(satisfying: constraint)
+        }
+    }
+
+    public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        guard let beaconRegion = region as? CLBeaconRegion else {
+            BeaconLogger.shared.log("⚠️ Entered non-beacon region")
+            return
+        }
+
+        let uuidString = beaconRegion.uuid.uuidString
+        triggeredUUIDs.remove(uuidString)
     }
 
 
@@ -304,37 +327,37 @@ public final class BeaconIpmagix: NSObject, CLLocationManagerDelegate, UNUserNot
                 }
             } catch {
                 BeaconLogger.shared.log("❌ Decoding error: \(error.localizedDescription)")
+
+                // 🔍 Log raw response to debug backend issues
+                if let rawString = String(data: data, encoding: .utf8) {
+                    BeaconLogger.shared.log("📄 Raw Response: \(rawString)")
+                }
                 BeaconLogger.shared.log("🕒 Response Time: \(responseTime)")
                 BeaconLogger.shared.log("⏱ Duration: \(duration)s")
+
+                // ✅ IMPORTANT: Do NOT block scanning or logic on decoding failure
+                // Just skip and continue normal beacon scanning
             }
         }.resume()
     }
 
     private func notifyUserWithCooldown(uuid: String) {
-        let now = Date()
-
-        if let lastNotified = notifiedUUIDs[uuid] {
-            let elapsed = now.timeIntervalSince(lastNotified)
-            guard elapsed >= cooldownInterval else {
-                BeaconLogger.shared.log("Cooldown active for \(uuid). \(cooldownInterval - elapsed)s remaining.")
-                return
-            }
-            // Cooldown expired — remove the lock and allow the call
-            notifiedUUIDs.removeValue(forKey: uuid)
-        } else {
-            // First time seeing this UUID — lock it and skip
-            notifiedUUIDs[uuid] = now
-            BeaconLogger.shared.log("UUID \(uuid) caught for the first time. Blocked until cooldown expires.")
-            // After 5 seconds, remove the lock so next call goes through
-            DispatchQueue.main.asyncAfter(deadline: .now() + cooldownInterval) { [weak self] in
-                self?.notifiedUUIDs.removeValue(forKey: uuid)
-                BeaconLogger.shared.log("Cooldown expired for \(uuid). Ready to notify.")
-            }
+        // 🚫 If already triggered, skip — removal after 5s handles the re-trigger window
+        guard !triggeredUUIDs.contains(uuid) else {
+            BeaconLogger.shared.log("⚠️ UUID \(uuid) already triggered. Waiting for cooldown.")
             return
         }
 
-        notifiedUUIDs[uuid] = now
-        self.notifyUser(uuid: uuid)
+        // ✅ Mark as triggered and call API
+        triggeredUUIDs.insert(uuid)
+        BeaconLogger.shared.log("✅ Triggering notify for UUID: \(uuid)")
+        notifyUser(uuid: uuid)
+
+        // 🕐 After 5s, remove so it can fire again if beacon is still in range
+        DispatchQueue.main.asyncAfter(deadline: .now() + cooldownInterval) {
+            self.triggeredUUIDs.remove(uuid)
+            BeaconLogger.shared.log("🔓 Cooldown expired for UUID: \(uuid). Ready to re-trigger.")
+        }
     }
 
 }
